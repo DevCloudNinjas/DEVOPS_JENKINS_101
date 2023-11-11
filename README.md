@@ -588,7 +588,8 @@ vault policy write jenkins jenkins-policy.hcl
 5. Default channel name – write the channel name we created at the time of slack installation like - #cicd-pipeline
 6. Apply and save
 
-### Stage-06:  GitHub integration with Jenkins ( application code repo )
+### Stage-06:  GitHub integration with Jenkins ( application code repo)
+
 1. Go to GitHub  > go to application code repo > settings
 2. Go to webhook >  Add webhook
 3. Payload URL -  http://jenkins-server-public-ip-with-port/github-webhook/
