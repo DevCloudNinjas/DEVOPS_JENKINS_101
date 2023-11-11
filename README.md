@@ -90,7 +90,7 @@ Push all the web application  code files into GitHub
 3. Open Jenkins Dashboard and install required plugins – SonarQube Scanner, Quality gates, Artifactory, Hashicorp Vault, Slack, Open Blue Ocean
 4. go to manage Jenkins > manage plugins > search for plugins > Download now and install after restart
 
-![deeee](./Images/jenkins.png)
+![deeee](./images/jenkins.png)
 
 ### Docker Installation
 
@@ -135,7 +135,10 @@ sudo ./aws/install
 1. install GitHub cli using these commands
 
 ```sh 
-type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
+# Check if curl is installed, and install it if not
+type -p curl >/dev/null || { sudo apt update && sudo apt install curl -y; }
+
+# Install GitHub CLI
 curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
 && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
 && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
@@ -143,7 +146,7 @@ curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo 
 && sudo apt install gh -y
 ```
 
-### Install Terraform 
+### Install Terraform
 
 1. install terraform using these commands
 
@@ -378,7 +381,7 @@ vault write -f auth/approle/role/jenkins-role/secret-id
 ![11](./images/sonarqube-.png)
 
 2.  create a project manually, give some name to project, project key
-![22](./Images/sonarqubedb.png) 
+![22](./images/sonarqubedb.png) 
 
 3. click on setup
 4. click on other ci
@@ -386,19 +389,20 @@ vault write -f auth/approle/role/jenkins-role/secret-id
 6. click on global
 7. select the project type, in this case, I used Maven
 
- ![333](./Images/soanr.png)  
+ ![333](./images/soanr.png)  
 
 8. copy the whole command and save it somewhere
 
-##### Create Quality Gate 
+#### Create Quality Gate 
 
 1. Click on Quality Gates
 2. Create a new Quality Gate according to your conditions
 
-![444](./Images/quality%20gate.png)
+![444](./images/quality%20gate.png)
 
 3. Click on Projects > click on all > select your project
-![122](./Images/qualiygate.png   )
+
+![122](./images/qualiygate.png   )
 4. Set as default
 
 ##### Create webhook
@@ -408,7 +412,7 @@ vault write -f auth/approle/role/jenkins-role/secret-id
 3. Create a webhook > Give some name
 4. for url use `http://jenkins-server-url-with-port/sonarqube-webhook/`
 
-![452](./Images/webhook.png)
+![452](./images/webhook.png)
 
 5. In secret leave the blank
 6. Click on create
@@ -435,7 +439,7 @@ vault write -f auth/approle/role/jenkins-role/secret-id
 If you already have a dockerhub account then no need to create another
 
 1. go to dockerhub official website
-![256](./Images/dockerhub.png)
+![256](./images/dockerhub.png)
 
 2. click on sign up
 3. fill in the details and sing up
@@ -458,7 +462,7 @@ Note: we can create token from dockerhub to integrate jenkins but in this case, 
 11. Click on Add to Slack
 12. select channel name
 
-![785](./Images/slack.png)
+![785](./images/slack.png)
 
 13. Click on Add Jenkins CI Integration
 14. Go down  to step 3 and copy Integration Token Credential ID and save it somewhere
@@ -483,12 +487,12 @@ Note: we can create token from dockerhub to integrate jenkins but in this case, 
 15. now create a channel - click on channels > create channel > give some name to channel > create
 16. now in message bar type `@your-app-name` and click on send icon >  click on add to channel
 
-> Done with Configuration of all tools, Now will we store the credentials into Vault server 
+> Done with Configuration of all tools, Now will we store the credentials into Vault server.
 
 ## Step: 3 Store the Credentials in the Vault server
 Run all these commands into the vault server
 
-1. enable secrets path 
+1. enable secrets path
 
 ```sh
 vault secrets enable -path=secrets kv
@@ -504,7 +508,7 @@ Likewise, we can store all the credentials in the vault server. I have stored on
 
 3. create a jenkins policy file with vi or nano ` jenkins-policy.hcl`
 
-```sh
+```groovy
 path "secrets/creds/*" {
  capabilities = ["read"]
 }
@@ -526,7 +530,7 @@ vault policy write jenkins jenkins-policy.hcl
 
 1. go to Jenkins>  Manage  Jenkins >Manage Credentials > system > Add credentials > Vault App Role Credentials > Paste role-id and secret-id token (we create in Vault - approle)  and save and apply.
 
-![252](./Images/approleVault.png) 
+![252](./images/approleVault.png) 
 
 2. now to  Manage  Jenkins  >  configure system/system>  search for vault plugin
 3. give the URL of the vault server
@@ -537,6 +541,7 @@ vault policy write jenkins jenkins-policy.hcl
 8. Apply and Save
 
 ### Stage-02: SonarQube server integration with Jenkins
+
 1.  go to Manage Jenkins>Manage Credentials > system > Add credentials > secret text file > paste the token we create in sonarqube and save and apply.
 2. now to  Manage  Jenkins  >  configure system/system>  search for SonarQube Server
 3. enable the environment  variables
@@ -545,9 +550,9 @@ vault policy write jenkins jenkins-policy.hcl
 6. select the credential
 7. Apply and Save
 
-### Stage-03: Jforg Artifactory integration with Jenkins
+### Stage-03: Jfrog Artifactory integration with Jenkins
 
-1. go to Manage Jenkins>Manage Credentials > system > Add credentials > username and password > write the username and password we created in jforg artifacotry and save and apply.
+1. go to Manage Jenkins>Manage Credentials > system > Add credentials > username and password > write the username and password we created in Jfrog artifacotry and save and apply.
 
 2. now to  Manage  Jenkins  >  configure system/system>  search for Jfrog
 3. give instance id as artifactory name
@@ -581,7 +586,7 @@ vault policy write jenkins jenkins-policy.hcl
 
 1. Go to Manage Jenkins>Manage Credentials > system > Add credentials > secret text file > give some name to credentials, paste the token we create in the Slack app and save and apply.
 2. now to  Manage  Jenkins  >  configure system/system>  search for Slack
-![142](./Images/slcakws.png)
+![142](./images/slcakws.png)
 
 3. workspace – your workspace name ( you create after login into Slack)
 4. Credential – attach the slack token
@@ -694,7 +699,7 @@ metadata:
 ### Stage-03:  Prometheus and Grafana Integration
 
 use this docs to import grafana Dashboard into grafana
-https://www.coachdevops.com/2022/05/how-to-setup-monitoring-on-kubernetes.html
+https://www.DevOpsCloudNinjas.com/2022/05/how-to-setup-monitoring-on-kubernetes.html
 
 > We integrated all the tools with Jenkins, Now Create a declarative jenkins  pipeline for each stage.
 
@@ -802,25 +807,23 @@ stage("Quality Gate") {
 
 ```groovy
 steps {
-                script {
-                    try {
-                        def server = Artifactory.newServer url: 'http://13.232.95.58:8082/artifactory', credentialsId: 'jfrog-cred'
-                        def uploadSpec = """{
-                            "files": [
-                                {
-                                    "pattern": "target/*.jar",
-                                    "target": "${TARGET_REPO}/"
-                                }
-                            ]
-                        }
-                        
-                        server.upload(uploadSpec)
-                    } catch (Exception e) {
-                        error("Failed to deploy artifacts to Artifactory: ${e.message}")
+    script {
+        try {
+            def server = Artifactory.newServer(url: 'http://13.232.95.58:8082/artifactory', credentialsId: 'jfrog-cred')
+            def uploadSpec = """{
+                "files": [
+                    {
+                        "pattern": "target/*.jar",
+                        "target": "${TARGET_REPO}/"
                     }
-                }
-            }
+                ]
+            }"""
+            server.upload(uploadSpec)
+        } catch (Exception e) {
+            error("Failed to deploy artifacts to Artifactory: ${e.message}")
         }
+    }
+}
 ```
 
 ### Stage-06 : Docker Build
@@ -862,7 +865,8 @@ stage('Image Scan') {
 
         // Assuming you want to push the image to a repository after scanning
         // sh 'docker push ${IMAGE_REPO}/${NAME}:${VERSION}-${GIT_COMMIT}'
-    }
+    } 
+}
 ```
 
 ### Stage-08: Upload report generated by trivy to AWS S3
@@ -870,7 +874,7 @@ stage('Image Scan') {
 In this stage, I used the shell command sh to Upload Scan report to AWS S3
 
 1. Define  a stage Upload report to AWS S3
-2. first create an AWS s3 bucket 
+2. first create an AWS s3 bucket
 3. go to this site https://opensource.triology.de/jenkins/pipeline-syntax/
 4. search for sh: shell script
 5. give your shell command to upload the object to aws s3
@@ -891,13 +895,16 @@ stage('Upload Scan report to AWS S3') {
 ```
 
 ### Stage-09: Push Docker images to DockerHub
-In this stage, I used   the shell command sh to push the docker image to the docker hub. I stored Credentials in Vault and accessed them in jenkins using  the Vault key. You can store DockerHub credentials in jenkins and use them as environment variables
-1. Define  a stage Docker images push
-1. go to this site https://opensource.triology.de/jenkins/pipeline-syntax/
-1. search for sh: shell script
-1. give your shell command to push docker images to the docker hub
 
- ``` sh
+In this stage, I used   the shell command sh to push the docker image to the docker hub. I stored Credentials in Vault and accessed them in jenkins using  the Vault key. You can store DockerHub credentials in jenkins and use them as environment variables
+
+1. Define  a stage Docker images push
+2. go to this site https://opensource.triology.de/jenkins/pipeline-syntax/
+
+3. search for sh: shell script
+4. give your shell command to push docker images to the docker hub
+
+ ```groovy
 stage ('Docker Build') {
             steps {
                 withVault(configuration: [skipSslVerification: true, timeout: 60, vaultCredentialId: 'vault-token', vaultUrl: 'http://13.232.53.209:8200'], vaultSecrets: [[path: 'secrets/creds/docker', secretValues: [[vaultKey: 'username'], [vaultKey: 'password']]]]) {
@@ -911,12 +918,14 @@ stage ('Docker Build') {
             }
         }
  ``` 
-### Stage-10: Clone/Pull Repo (k8s manifest repo )
-1. in this stage first we check whether the repo already exists or not
-1. if exists then pull the changes
-1. if not then will clone the repo
 
- ```sh
+### Stage-10: Clone/Pull Repo (k8s manifest repo )
+
+1. In this stage first we check whether the repo already exists or not
+2. If exists then pull the changes
+3. If not then will clone the repo
+
+ ```groovy
 stage('Clone/Pull Repo') {
             steps {
                 script {
@@ -938,8 +947,10 @@ stage('Clone/Pull Repo') {
 ```
 
 ### Stage: 11 Update Manifest
+
 1. used sed command to replace images tag in deployment manifests
-```sh
+
+```groovy
 stage('Update Manifest') {
             steps {
                 dir("DevOps_MasterPiece-CD-with-argocd/yamls") {
@@ -949,14 +960,17 @@ stage('Update Manifest') {
             }
         }
 ```
+
 ### Stage: 12 Commit and Push Changes to the k8s manifest repo
+
 1. set the global username
-1. set the remote repo URL
-1. checkout the branch to feature
-1. stage the changes
-1. commit the changes
-1. push the changes to the feature branch
-```sh
+2. set the remote repo URL
+3. checkout the branch to feature
+4. stage the changes
+5. commit the changes
+6. push the changes to the feature branch
+
+```groovy
 stage('Commit & Push') {
             steps {
                 withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'GITHUB_TOKEN')]) {
@@ -974,11 +988,12 @@ stage('Commit & Push') {
 ```
 
 ### Stage: 13 Create Pull Request
+
 `The reason to create a pull request is that argocd is sync automatically with Git Hub. GitHub is the only single source of truth for argocd. So if jenkins push the changes to the main branch then argocd will deploy changes directly without reviewing the changes. This should not happen in the Production environment. That’s why we create pull requests against the main branch. So a senior person from the team can review the changes and merge them into the main branch. Then n then only changes should go to the production environment.`
 
-Here `token.txt` contain the GitHub token, the reason for storing the GitHub token in the text file bcoz `gh auth login --with-token` accept only STDIN Input 
- 
-```sh
+Here `token.txt` contain the GitHub token, the reason for storing the GitHub token in the text file bcoz `gh auth login --with-token` accept only STDIN Input.
+
+```groovy
 stage('Raise PR') {
             steps {
                 withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'GITHUB_TOKEN')]) {
@@ -998,22 +1013,27 @@ stage('Raise PR') {
         } 
 ```
 
-
-
 ### Stage: 14 Post build action 
+
 In post build action I used Slack notification. After  the build jenkins will send a notification message to Slack whether your build success or failure.
-1. go to jenkins > your project > pipeline syntax > search for slacksend: send slack message 
-1. write your channel name and message > generate pipeline syntax.
+
+1. Go to jenkins > your project > pipeline syntax > search for slacksend: send slack message 
+
+2. write your channel name and message > generate pipeline syntax.
+
 #### Note – I used custom messages for my project. I created a function for Slack notification and called the function into Post build.
- ```sh
+
+```groovy
 post{
 	always{
 		sendSlackNotifcation()
 	}
 }
 ```
-sendSlackNotification function 
- ```sh
+
+### Send SlackNotification function 
+
+```sh
 def sendSlackNotifcation()
 {
     if ( currentBuild.currentResult == "SUCCESS" ) {
@@ -1027,6 +1047,7 @@ def sendSlackNotifcation()
 }
 
  ```
+
 #### Find the whole pipeline here
 
 ``` sh
@@ -1036,7 +1057,9 @@ def sendSlackNotifcation()
 ## Step: 7 Project Output
 
 ### Final outputs of this Project
+
 ### Jenkins Output : 
+
 Sorry, I forgot to change the stage name while building the job, but don't worry I made changes in the Jenkins file.
 
 ![deeee](./images/jenkins.png)
@@ -1084,9 +1107,3 @@ You can apply your custom quality gate like there should be zero ( bug, Vulnerab
 
 ### Grafana  
 ![deeee](./images/Screenshot%20from%202023-06-22%2023-19-50.png)
-
-
-
-
-
-
