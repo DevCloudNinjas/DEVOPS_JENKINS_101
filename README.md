@@ -614,12 +614,12 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o yaml
 echo “copied-password” | base64 -d
 ```
 
-5. copy the decoded password and login into argocd
-6.  go to User Info – update password
-7.  now go to Application
-8. click on New Application
-9. give app name
-10. chose Project Name as default
+5. Copy the decoded password and login into argocd
+6. Go to User Info – update password
+7. Now go to Application
+8. Click on New Application
+9. Give app name
+10. Chose Project Name as default
 11. SYNC Policy – Automatic
 12. enable PRUNE RESOURCES and SELF HEAL
 13. SOURCE-
