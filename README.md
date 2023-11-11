@@ -85,7 +85,7 @@ Push all the web application  code files into GitHub
 2. After installation, install the suggested plugins
 3. Open Jenkins Dashboard and install required plugins – SonarQube Scanner, Quality gates, Artifactory, Hashicorp Vault, Slack, Open Blue Ocean
 4. go to manage Jenkins > manage plugins > search for plugins > Download now and install after restart
-![deeee](./Images/jenkins.png) 
+![deeee](./Images/jenkins.png)
 
 #### Docker Installtion
 1. Install docker using this command 
